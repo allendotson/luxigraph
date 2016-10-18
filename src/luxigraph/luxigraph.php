@@ -6,6 +6,53 @@ class Luxigraph
     protected $image, $temporary;
     public $_prefix = 'IMG';
 
+    public function GetRemoteImage($_url)
+    {
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $_url);
+		curl_setopt($ch, CURLOPT_HEADER, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_NOBODY, 1);
+		$results = curl_exec($ch);
+		$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		$results = explode("\n", trim($results));
+		foreach($results as $line)
+        {
+			if (strtok($line, ":") == "Content-Type")
+            {
+				$parts = explode(":", $line);
+				$mime = trim($parts[1]);
+			}
+		}
+
+		if ($status == "0")
+        {
+			throw new Exception("Unknown error");
+		}
+        elseif ($status != "200")
+        {
+    		throw new Exception($status);
+		}
+
+		if ($mime != "image/jpeg")
+        {
+			throw new Exception("Provided image was not a image/jpeg");
+		}
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $_url);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		//curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+		$results = curl_exec($ch);
+		$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		$this->image = imagecreatefromstring($results);
+	}
+
     private function SetImage($image)
     {
         $this->image = $image;
