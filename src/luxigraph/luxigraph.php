@@ -1,15 +1,29 @@
-<?php
+<?php namespace Luxigraph;
 require_once "luxigraph_filters.php";
 
-class Luxigraph
+class Image
 {
-    protected $image, $temporary;
-    public $_prefix = 'IMG';
+    public $temporary = null;
+    private $configuration = array();
 
-    public function GetRemoteImage($_url)
+    private function __construct(array $configuration = array())
     {
+        $this->configuration = array_merge(array(
+            "prefix" => "lux",
+            "quality" => 100
+        ), $configuration);
+
+        return $this;
+    }
+
+    public function GetRemote($url = null)
+    {
+        if ($url == "" || $url == null)
+        {
+            throw new Exception("URL cannot be empty");
+        }
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $_url);
+		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HEADER, 1);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_NOBODY, 1);
@@ -42,7 +56,7 @@ class Luxigraph
 		}
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $_url);
+		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		//curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
@@ -50,16 +64,65 @@ class Luxigraph
 		$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 
-		$this->image = imagecreatefromstring($results);
+		return imagecreatefromstring($results);
 	}
 
-    private function SetImage($image)
+    public function SaveTemporary($image = null)
     {
-        $this->image = $image;
-        $this->temporary = $image;
+        if ($image == "" || $image == null)
+        {
+            throw new Exception("Could not save empty temporary image");
+        }
+        $this->temporary = tempnam("/tmp", $this->configuration->prefix);
+		imagepng($image, $this->temporary, 0);
+        return $this->temporary;
     }
 
-    public function process($image, $name)
+    public function Capture($temporary = null)
+    {
+        if ($temporary == "" || $temporary == null)
+        {
+            throw new Exception("Could not capture empty temporary image");
+        }
+		ob_start();
+		$image = imagecreatefrompng($temporary = null);
+		imagejpeg($image, NULL, 100);
+		$bin = ob_get_contents();
+		ob_end_clean();
+        return $bin;
+	}
+
+    public function Encode($bin = null)
+    {
+        if ($bin == "" || $bin == null)
+        {
+            throw new Exception("Could not encode empty binary");
+        }
+		return base64_encode($bin);
+	}
+
+	public function Decode($enc = null)
+    {
+        if ($enc == "" || $enc == null)
+        {
+            throw new Exception("Could not decode empty encoded");
+        }
+		return base64_decode($enc);
+	}
+
+    public function Display($image = null)
+    {
+        if ($image == "" || $image == null)
+        {
+            throw new Exception("Cannot display empty image");
+        }
+		header("Content-Type: image/jpg");
+		$disp = imagecreatefrompng($image);
+		imagejpeg($disp, NULL, 100);
+		exit();
+	}
+
+    public function Process($image, $name)
     {
         $this->SetImage($image);
 
