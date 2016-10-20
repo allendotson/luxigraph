@@ -3,10 +3,8 @@
 # Usage
 
 ```php
-GetRemoteImage($url);
+GetRemoteImage();
 ```
-url: string
-return: image object
 
 ```php
 SaveTemporary($image);

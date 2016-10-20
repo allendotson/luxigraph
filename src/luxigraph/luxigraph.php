@@ -18,6 +18,10 @@ class Image
 
     public function GetRemote($url = null)
     {
+		/*
+		@param string $url a url of remote image
+		@return binary image blob
+		*/
         if ($url == "" || $url == null)
         {
             throw new Exception("URL cannot be empty");
@@ -60,40 +64,51 @@ class Image
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		//curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-		$results = curl_exec($ch);
+		$bin = curl_exec($ch);
 		$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 
-		return imagecreatefromstring($results);
+		return $bin;
 	}
 
-    public function SaveTemporary($image = null)
-    {
+	public function ConvertToMagick($magick = new ImageMagick(), $bin = null)
+	{
+		/*
+		@param ImageMagick $magick instance of ImageMagick
+		@param string $bin a binary image
+		@return ImageMagick image
+		*/
+        if ($bin == "" || $bin == null)
+        {
+            throw new Exception("Binary image cannot be empty");
+        }
+
+		$image = $magick->readImageBlob($bin);
+		return $image;
+	}
+
+	public function ConvertToBinary($magick = new ImageMagick(), $image = null)
+	{
+		/*
+		@param ImageMagick $magick instance of ImageMagick
+		@param ImageMagick $image an image
+		@return binary image blob
+		*/
         if ($image == "" || $image == null)
         {
-            throw new Exception("Could not save empty temporary image");
+            throw new Exception("Image cannot be empty");
         }
-        $this->temporary = tempnam("/tmp", $this->configuration->prefix);
-		imagepng($image, $this->temporary, 0);
-        return $this->temporary;
-    }
 
-    public function Capture($temporary = null)
-    {
-        if ($temporary == "" || $temporary == null)
-        {
-            throw new Exception("Could not capture empty temporary image");
-        }
-		ob_start();
-		$image = imagecreatefrompng($temporary = null);
-		imagejpeg($image, NULL, 100);
-		$bin = ob_get_contents();
-		ob_end_clean();
-        return $bin;
+		$bin = $magick->getImageBlob($image);
+		return $bin;
 	}
 
     public function Encode($bin = null)
     {
+		/*
+		@param string $bin binary image
+		@return base64 encoded image
+		*/
         if ($bin == "" || $bin == null)
         {
             throw new Exception("Could not encode empty binary");
@@ -103,6 +118,10 @@ class Image
 
 	public function Decode($enc = null)
     {
+		/*
+		@param string $enc base64 encoded image
+		@return binary image
+		*/
         if ($enc == "" || $enc == null)
         {
             throw new Exception("Could not decode empty encoded");
@@ -110,6 +129,7 @@ class Image
 		return base64_decode($enc);
 	}
 
+	/*
     public function Display($image = null)
     {
         if ($image == "" || $image == null)
@@ -168,5 +188,6 @@ class Image
         # execute convert program
         return shell_exec($_command);
     }
+	*/
 }
 ?>
