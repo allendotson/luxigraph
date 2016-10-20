@@ -1,6 +1,9 @@
 <?php namespace Luxigraph;
-require_once "filters/brooklyn.php";
-require_once "filters/nineteen77.php";
+
+foreach (glob("filters/*.php") as $filename)
+{
+    require_once $filename;
+}
 
 class Filter
 {
