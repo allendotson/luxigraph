@@ -1,5 +1,6 @@
 <?php namespace Luxigraph;
 require_once "filters/brooklyn.php";
+require_once "filters/nineteen77.php";
 
 class Filter
 {
@@ -60,7 +61,7 @@ class Filter
 		$overlay = new \Imagick();
 		$overlay->newPseudoImage($image->getImageWidth(), $image->getImageHeight(), "canvas:" . $color);
 		$image->compositeImage($overlay, $composition, 0, 0);
-		
+
 		return $image;
 	}
 

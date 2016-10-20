@@ -6,7 +6,7 @@
 	$image = $luximage->GetRemote("http://cms.sites918.com/common/uploads/test_sites918_com/media/52-water-ocean-girl-forest.jpg");
 	$image = $luximage->BinaryToMagick($image);
 
-	$filter = new \Luxigraph\Brooklyn();
+	$filter = new \Luxigraph\Nineteen77();
 	$image = $filter->Process($image);
 
 	header("Content-Type: image/jpeg");
