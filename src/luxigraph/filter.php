@@ -1,10 +1,5 @@
 <?php namespace Luxigraph;
 
-foreach (glob("filters/*.php") as $filename)
-{
-    require_once $filename;
-}
-
 class Filter
 {
     public function Process($image = null)

@@ -1,4 +1,5 @@
 <?php namespace Luxigraph;
+
 class Nineteen77 extends Filter
 {
 	private $curves;
