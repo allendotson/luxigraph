@@ -7,10 +7,6 @@
 	$image = $luximage->GetRemote("http://cms.sites918.com/common/uploads/test_sites918_com/media/52-water-ocean-girl-forest.jpg");
 	$image = $luximage->BinaryToMagick($image);
 
-	/*
-	$filter = new \Luxigraph\Nineteen77();
-	$image = $filter->Process($image);
-	*/
 	$farm = new \Luxigraph\Farm();
 	$image = $farm->Process($image, "1977");
 
