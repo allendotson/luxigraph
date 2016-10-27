@@ -1,8 +1,10 @@
 # Luxigraph
 
+Luxigraph is a library of tools designed to help create Instagram styled filters in PHP using ImageMagick. These tools will enable you to convert your Photoshop filters into a dynamic photo filter for the web.
+
 ## Usage
 
-```php
+```
 Vignette
 Texture
 Saturation
@@ -14,7 +16,8 @@ Curves
 
 ## Todo
 
-- Everything
+- Finish markdown file
+- Create more filters
 
 ## Donate
 
