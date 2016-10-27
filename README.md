@@ -3,7 +3,13 @@
 ## Usage
 
 ```php
-codeHere();
+Vignette
+Texture
+Saturation
+BrightnessContrast
+Levels
+Colorize
+Curves
 ```
 
 ## Todo

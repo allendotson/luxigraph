@@ -39,6 +39,7 @@ class Nineteen77 extends Filter
 		}
 
 		$image = $this->Curves($image, $this->curves);
+
 		return $image;
 	}
 }
